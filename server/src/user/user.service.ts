@@ -12,7 +12,14 @@ export class UserService {
     private userModel: Model<User>,
   ) {}
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const existingUser = await this.userModel.findOne({
+      useremail: createUserDto.useremail,
+    });
+    if (existingUser) {
+      throw new Error('이미 등록된 이메일입니다.');
+    }
     const createUserData = new this.userModel(createUserDto);
+
     return createUserData.save();
   }
 

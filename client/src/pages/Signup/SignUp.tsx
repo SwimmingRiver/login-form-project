@@ -1,23 +1,32 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import useSignUp from "../../hooks/user/useSignUp";
+import { UserInterface } from "../../types/user";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   type Inputs = {
-    email: string;
+    useremail: string;
     password: string;
     passwordCheck: string;
-    name: string;
+    username: string;
   };
 
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+
+  const { mutate, isSuccess } = useSignUp();
+  const onSubmit: SubmitHandler<Inputs> = (data: UserInterface) => {
+    mutate(data);
   };
+  if (isSuccess) {
+    navigate("/");
+  }
   const isCheckpassword = watch("password");
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -25,7 +34,7 @@ function SignUp() {
       <div>
         <label>Email</label>
         <input
-          {...register("email", {
+          {...register("useremail", {
             required: "이메일은 필수 입력 항목입니다.",
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -33,7 +42,7 @@ function SignUp() {
             },
           })}
         />
-        {errors.email && <p>{errors.email.message}</p>}
+        {errors.useremail && <p>{errors.useremail.message}</p>}
       </div>
       <div>
         <input
@@ -64,7 +73,10 @@ function SignUp() {
         })}
       />
       {errors.passwordCheck && <p>{errors.passwordCheck.message}</p>}
-      <input placeholder="name" {...register("name", { required: true })} />
+      <input
+        placeholder="username"
+        {...register("username", { required: true })}
+      />
       <button type="submit">sign up</button>
     </form>
   );

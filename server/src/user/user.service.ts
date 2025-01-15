@@ -24,7 +24,7 @@ export class UserService {
     const createUserData = new this.userModel({
       useremail,
       username,
-      hashedPassword,
+      password: hashedPassword,
     });
 
     return createUserData.save();

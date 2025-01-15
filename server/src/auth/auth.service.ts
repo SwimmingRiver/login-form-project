@@ -13,7 +13,9 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
-  async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { useremail, password } = loginDto;
 
     const user = await this.userModel.findOne({ useremail });
@@ -26,8 +28,9 @@ export class AuthService {
     }
 
     const payload = { email: user.useremail, sub: user._id };
-    const accessToken = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
-    return { accessToken };
+    return { accessToken, refreshToken };
   }
 }

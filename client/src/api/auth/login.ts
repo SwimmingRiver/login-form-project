@@ -4,7 +4,9 @@ import { UserInterface } from "../../types/user";
 const login = async (data: UserInterface) => {
   const baseUrl = process.env.REACT_APP_BASE_URL;
   try {
-    const res = await axios.post(`${baseUrl}/auth/login`, data);
+    const res = await axios.post(`${baseUrl}/auth/login`, data, {
+      withCredentials: true,
+    });
     if (res.status === 200) {
       console.log("Complete login");
       return res.data;
@@ -15,8 +17,9 @@ const login = async (data: UserInterface) => {
     } else {
       console.warn(`Unhandled status code: ${res.status}`);
     }
-    console.log(res.data);
-    return res.data;
+
+    const { accessToken } = res.data;
+    localStorage.setItem("accessToken", accessToken);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {

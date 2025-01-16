@@ -13,9 +13,11 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
-  async login(
-    loginDto: LoginDto,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  async login(loginDto: LoginDto): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: Partial<User>;
+  }> {
     const { useremail, password } = loginDto;
 
     const user = await this.userModel.findOne({ useremail });
@@ -27,10 +29,18 @@ export class AuthService {
       throw new UnauthorizedException('wrong password');
     }
 
-    const payload = { email: user.useremail, sub: user._id };
-    const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload);
+    const payload = { sub: user._id };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
-    return { accessToken, refreshToken };
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user._id,
+        useremail: user.useremail,
+        username: user.username,
+      },
+    };
   }
 }

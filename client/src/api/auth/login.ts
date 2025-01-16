@@ -1,10 +1,10 @@
 import axios from "axios";
 import { UserInterface } from "../../types/user";
+import apiClient from "../apiClient";
 
 const login = async (data: UserInterface) => {
-  const baseUrl = process.env.REACT_APP_BASE_URL;
   try {
-    const res = await axios.post(`${baseUrl}/auth/login`, data, {
+    const res = await apiClient.post(`/auth/login`, data, {
       withCredentials: true,
     });
     if (res.status === 200) {

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { UserInterface } from "../../types/user";
+import apiClient from "../apiClient";
 const signUp = async (data: UserInterface) => {
   const baseUrl = process.env.REACT_APP_BASE_URL;
   try {
-    const res = await axios.post(`${baseUrl}/user`, data);
+    const res = await apiClient.post(`${baseUrl}/user/signup`, data);
     if (res.status === 200) {
       console.log("Complete sign up");
       return res.data;

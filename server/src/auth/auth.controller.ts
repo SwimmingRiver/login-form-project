@@ -63,4 +63,17 @@ export class AuthController {
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
+  @Post('logout')
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    if (!refreshToken) {
+      return res.status(400).json({ message: 'No refresh token found' });
+    }
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+    return res.status(200).json({ message: 'Logged out successfully' });
+  }
 }

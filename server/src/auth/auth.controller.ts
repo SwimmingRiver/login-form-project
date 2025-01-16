@@ -26,7 +26,9 @@ export class AuthController {
         secure: true,
         sameSite: 'strict',
       })
-      .send({ accessToken: tokens.accessToken });
+      .send({ accessToken: tokens.accessToken, user: tokens.user });
+
+    console.log('res:', tokens.user);
   }
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {

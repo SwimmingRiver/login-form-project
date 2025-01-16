@@ -1,12 +1,14 @@
 import axios from "axios";
 import { UserInterface } from "../../types/user";
 import apiClient from "../apiClient";
-const signUp = async (data: UserInterface) => {
-  const baseUrl = process.env.REACT_APP_BASE_URL;
+
+const login = async (data: UserInterface) => {
   try {
-    const res = await apiClient.post(`${baseUrl}/user/signup`, data);
+    const res = await apiClient.post(`/auth/login`, data, {
+      withCredentials: true,
+    });
     if (res.status === 200) {
-      console.log("Complete sign up");
+      console.log("Complete login");
       return res.data;
     } else if (res.status === 400) {
       console.error("Invalid data provided.");
@@ -15,6 +17,9 @@ const signUp = async (data: UserInterface) => {
     } else {
       console.warn(`Unhandled status code: ${res.status}`);
     }
+
+    const { accessToken } = res.data;
+    localStorage.setItem("accessToken", accessToken);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
@@ -38,4 +43,4 @@ const signUp = async (data: UserInterface) => {
     }
   }
 };
-export default signUp;
+export default login;

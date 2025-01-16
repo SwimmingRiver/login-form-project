@@ -1,6 +1,7 @@
 import axios from "axios";
 import { UserInterface } from "../../types/user";
 import apiClient from "../apiClient";
+import useAuthStore from "../../store/authStore";
 
 const login = async (data: UserInterface) => {
   try {
@@ -18,7 +19,8 @@ const login = async (data: UserInterface) => {
       console.warn(`Unhandled status code: ${res.status}`);
     }
 
-    const { accessToken } = res.data;
+    const { accessToken, user } = res.data;
+    useAuthStore.getState().login(user, accessToken);
     localStorage.setItem("accessToken", accessToken);
   } catch (error) {
     if (axios.isAxiosError(error)) {

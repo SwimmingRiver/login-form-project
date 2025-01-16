@@ -5,6 +5,7 @@ import {
   Res,
   Req,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/auth.dto';
@@ -27,8 +28,6 @@ export class AuthController {
         sameSite: 'strict',
       })
       .send({ accessToken: tokens.accessToken, user: tokens.user });
-
-    console.log('res:', tokens.user);
   }
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
@@ -48,6 +47,20 @@ export class AuthController {
       res.send({ accessToken: newAccessToken });
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+  //TODO: 엔드포인트 명명 고민하기
+  @Get('me')
+  async fetchMyUserData(@Req() req: Request, @Res() res: Response) {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    try {
+      const decoded = this.jwtService.verify(token);
+      return res.status(200).json({ user: decoded });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
     }
   }
 }

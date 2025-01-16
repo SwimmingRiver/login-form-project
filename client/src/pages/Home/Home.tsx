@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
+import useMe from "../../hooks/auth/useMe";
 
 function Home() {
-  const { user, isLoggedIn } = useAuthStore();
-  console.log(user);
+  const { data } = useMe();
   return (
     <div>
       <span>Home</span>
-      {isLoggedIn && <span>{user?.username}</span>}
-      <Link to={"/login"}>login</Link>
+      {data ? (
+        <span>{data.user?.username}</span>
+      ) : (
+        <Link to={"/login"}>login</Link>
+      )}
     </div>
   );
 }

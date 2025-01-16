@@ -29,7 +29,7 @@ export class AuthService {
       throw new UnauthorizedException('wrong password');
     }
 
-    const payload = { sub: user._id };
+    const payload = { sub: user._id, username: user.username };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useMe from "../hooks/auth/useMe";
 interface AuthState {
   user: {
     id: string;

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import useLogin from "../../hooks/auth/useLogin";
 import { UserInterface } from "../../types/user";
+import axios from "axios";
 function LoginForm() {
   type Inputs = {
     useremail: string;
@@ -21,6 +22,9 @@ function LoginForm() {
   if (isSuccess) {
     navigate("/");
   }
+  const onFetchNaverLogin = () => {
+    window.location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&code=qwe&redirect_uri=http://localhost:3000/redirect`;
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <span>login form</span>
@@ -51,8 +55,11 @@ function LoginForm() {
         })}
       />
 
-      <button>submit</button>
+      <button type="submit">submit</button>
       <Link to={"/signup"}>sign up</Link>
+      <button type="button" onClick={onFetchNaverLogin}>
+        naver
+      </button>
     </form>
   );
 }

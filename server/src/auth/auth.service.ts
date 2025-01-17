@@ -43,4 +43,22 @@ export class AuthService {
       },
     };
   }
+
+  async findOrCreate(loginDto: {
+    useremail: string;
+    username: string;
+    password: string;
+  }): Promise<User> {
+    let user = await this.userModel.findOne({ useremail: loginDto.useremail });
+    if (!user) {
+      user = new this.userModel({
+        useremail: loginDto.useremail,
+        username: loginDto.username,
+        password: loginDto.password,
+      });
+      await user.save();
+    }
+
+    return user;
+  }
 }

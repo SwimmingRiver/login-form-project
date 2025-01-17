@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
 import useMe from "../../hooks/auth/useMe";
 import useLogout from "../../hooks/auth/useLogout";
+import { useEffect } from "react";
 
 function Home() {
   const { data } = useMe();
   const { mutate } = useLogout();
   const token = localStorage.getItem("accessToken");
+
   const onClick = () => {
     mutate();
   };

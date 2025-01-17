@@ -11,12 +11,15 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/auth.dto';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
@@ -75,5 +78,66 @@ export class AuthController {
       sameSite: 'strict',
     });
     return res.status(200).json({ message: 'Logged out successfully' });
+  }
+  @Post('naver')
+  async oAuth_naver(@Body('code') code: string, @Res() res) {
+    try {
+      const tokenResponse = await axios.post(
+        'https://nid.naver.com/oauth2.0/token',
+        null,
+        {
+          params: {
+            grant_type: 'authorization_code',
+            client_id: this.configService.get<string>(
+              'NODE_ENV_NAVER_CLIENT_ID',
+            ),
+            client_secret: this.configService.get<string>(
+              'NODE_ENV_NAVER_CLIENT_SECRET',
+            ),
+            code,
+          },
+        },
+      );
+      const { access_token, refresh_token } = tokenResponse.data;
+
+      const userInfoResponse = await axios.get(
+        'https://openapi.naver.com/v1/nid/me',
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        },
+      );
+      const userInfo = userInfoResponse.data.response;
+
+      const user = await this.authService.findOrCreate({
+        useremail: userInfo.email,
+        username: userInfo.nickname,
+        password: '',
+      });
+
+      const accessToken = this.jwtService.sign({
+        useremail: user.useremail,
+        username: user.username,
+        sub: user._id,
+      });
+      const refreshToken = this.jwtService.sign(
+        { useremail: user.useremail, sub: user._id },
+        { expiresIn: '7d' },
+      );
+      res
+        .cookie('refresh_token', refreshToken, {
+          httpOnly: true,
+          sameSite: 'strict',
+        })
+        .json({
+          success: true,
+          accessToken,
+          user,
+        });
+      return res;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

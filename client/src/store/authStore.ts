@@ -12,7 +12,6 @@ interface AuthState {
     user: { id: string; username: string; useremail: string },
     token: string
   ) => void;
-  // logout: () => void;
   initAuth: () => void;
 }
 

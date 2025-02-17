@@ -14,7 +14,7 @@ function Redirect() {
       },
       { withCredentials: true }
     );
-    localStorage.setItem("accessToken", res.data.accessToken);
+
     if (res.status === 201) {
       navigate("/");
     }

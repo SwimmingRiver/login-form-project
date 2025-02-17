@@ -14,7 +14,7 @@ const me = async (data: any) => {
           { withCredentials: true }
         );
         const newAccessToken = refreshResponse.data.accessToken;
-        localStorage.setItem("accessToken", newAccessToken);
+
         err.config.headers.Authorization = `Bearer ${newAccessToken}`;
         return apiClient(err.config);
       } catch (error) {

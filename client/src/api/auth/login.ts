@@ -5,9 +5,10 @@ import useAuthStore from "../../store/authStore";
 
 const login = async (data: UserInterface) => {
   try {
-    const res = await apiClient.post(`/auth/login`, data, {
-      withCredentials: true,
-    });
+    const res = await apiClient.post(`/auth/login`, data);
+    const accessToken = res.data.accessToken;
+    apiClient.defaults.headers.Authorization = `Bearer ${accessToken}`;
+    console.log(accessToken);
     if (res.status === 200) {
       console.log("Complete login");
       return res.data;
@@ -18,10 +19,6 @@ const login = async (data: UserInterface) => {
     } else {
       console.warn(`Unhandled status code: ${res.status}`);
     }
-
-    const { accessToken, user } = res.data;
-    useAuthStore.getState().login(user, accessToken);
-    localStorage.setItem("accessToken", accessToken);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response) {

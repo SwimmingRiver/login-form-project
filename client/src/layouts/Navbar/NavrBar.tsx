@@ -5,8 +5,8 @@ import useLogout from "../../hooks/auth/useLogout";
 import { Link } from "@chakra-ui/react";
 const NavBar = () => {
   const { data } = useMe();
+
   const { mutate } = useLogout();
-  const token = localStorage.getItem("accessToken");
   const onClick = () => {
     mutate();
   };
@@ -21,7 +21,7 @@ const NavBar = () => {
       gap="50px"
     >
       <Link href="/">Home</Link>
-      {data && token ? (
+      {data ? (
         <div
           style={{
             display: "flex",

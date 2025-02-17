@@ -25,12 +25,17 @@ function LoginForm() {
     formState: { errors },
   } = useForm<Inputs>();
   const { mutate, isSuccess } = useLogin();
+  console.log(errors);
   const onSubmit: SubmitHandler<any> = (data: UserInterface) => {
+    if (errors) {
+      console.log(errors);
+    }
+
     mutate(data);
   };
-  if (isSuccess) {
-    window.location.href = "/";
-  }
+  // if (isSuccess) {
+  //   window.location.href = "/";
+  // }
   const onFetchNaverLogin = () => {
     window.location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&code=qwe&redirect_uri=http://localhost:3000/redirect`;
   };

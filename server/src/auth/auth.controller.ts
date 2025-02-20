@@ -59,7 +59,6 @@ export class AuthController {
   @Get('me')
   async fetchMyUserData(@Req() req: Request, @Res() res: Response) {
     const token = req.headers.cookie?.split('=')[1];
-    console.log(token);
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
     }

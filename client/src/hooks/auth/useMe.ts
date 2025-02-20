@@ -5,6 +5,8 @@ const useMe = () => {
   return useQuery({
     queryKey: ["myInfo"],
     queryFn: (data: any) => me(data),
+    staleTime: 0,
+    retry: 0,
   });
 };
 export default useMe;

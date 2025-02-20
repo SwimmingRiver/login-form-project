@@ -4,7 +4,6 @@ import axios from "axios";
 const me = async (data: any) => {
   try {
     const res = await apiClient.get(`/auth/me`, data);
-    console.log(res);
     return res.data;
   } catch (err: any) {
     if (err.response.status === 401) {

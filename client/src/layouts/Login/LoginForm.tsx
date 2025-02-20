@@ -25,7 +25,7 @@ function LoginForm() {
     formState: { errors },
   } = useForm<Inputs>();
   const { mutate, isSuccess } = useLogin();
-  console.log(errors);
+
   const onSubmit: SubmitHandler<any> = (data: UserInterface) => {
     if (errors) {
       console.log(errors);

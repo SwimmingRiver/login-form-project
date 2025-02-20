@@ -1,15 +1,16 @@
 import axios from "axios";
 import { UserInterface } from "../../types/user";
 import apiClient from "../apiClient";
-import useAuthStore from "../../store/authStore";
 
 const login = async (data: UserInterface) => {
   try {
-    const res = await apiClient.post(`/auth/login`, data);
+    const res = await apiClient.post(`/auth/login`, data, {
+      withCredentials: true,
+    });
     const accessToken = res.data.accessToken;
     apiClient.defaults.headers.Authorization = `Bearer ${accessToken}`;
-    console.log(accessToken);
-    if (res.status === 200) {
+    console.log(res.data);
+    if (res.status === 200 || 201) {
       console.log("Complete login");
       return res.data;
     } else if (res.status === 400) {

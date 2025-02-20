@@ -16,7 +16,7 @@ function Redirect() {
     );
 
     if (res.status === 201) {
-      navigate("/");
+      window.location.href = "/";
     }
   };
   useEffect(() => {

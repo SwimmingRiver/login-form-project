@@ -17,7 +17,7 @@ const NavBar = () => {
   useEffect(() => {
     if (isSuccess) {
       navigate("/");
-      queryClient.setQueryData(["myInfo"], null);
+      queryClient.setQueryData(["myInfo"], null); //TODO: 쿼리값을 강제로 초기화해도 되는지에 대해서 공부 필요
     }
   }, [isSuccess, navigate, queryClient]);
   return (

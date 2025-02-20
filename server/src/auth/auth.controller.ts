@@ -112,7 +112,6 @@ export class AuthController {
         },
       );
       const userInfo = userInfoResponse.data.response;
-
       const user = await this.authService.findOrCreate({
         useremail: userInfo.email,
         username: userInfo.nickname,
@@ -125,7 +124,7 @@ export class AuthController {
         sub: user._id,
       });
       const refreshToken = this.jwtService.sign(
-        { useremail: user.useremail, sub: user._id },
+        { useremail: user.useremail, sub: user._id, username: user.username },
         { expiresIn: '7d' },
       );
       res

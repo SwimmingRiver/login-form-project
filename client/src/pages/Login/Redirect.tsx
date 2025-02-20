@@ -1,9 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 function Redirect() {
-  const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   const fetchOauth = async () => {

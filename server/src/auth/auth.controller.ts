@@ -101,7 +101,7 @@ export class AuthController {
           },
         },
       );
-      const { access_token, refresh_token } = tokenResponse.data;
+      const { access_token } = tokenResponse.data;
 
       const userInfoResponse = await axios.get(
         'https://openapi.naver.com/v1/nid/me',
@@ -112,6 +112,7 @@ export class AuthController {
         },
       );
       const userInfo = userInfoResponse.data.response;
+
       const user = await this.authService.findOrCreate({
         useremail: userInfo.email,
         username: userInfo.nickname,
@@ -119,23 +120,18 @@ export class AuthController {
       });
 
       const accessToken = this.jwtService.sign({
-        useremail: user.useremail,
         username: user.username,
         sub: user._id,
       });
-      const refreshToken = this.jwtService.sign(
-        { useremail: user.useremail, sub: user._id, username: user.username },
-        { expiresIn: '7d' },
-      );
+
       res
-        .cookie('refresh_token', refreshToken, {
+        .cookie('refresh_token', accessToken, {
           httpOnly: true,
           sameSite: 'strict',
         })
         .json({
           success: true,
           accessToken,
-          user,
         });
       return res;
     } catch (error) {

@@ -2,8 +2,6 @@ import { IsBoolean, IsDateString, IsString } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
-  author: string;
-  @IsString()
   title: string;
   @IsString()
   contents: string;

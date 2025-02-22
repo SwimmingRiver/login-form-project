@@ -6,37 +6,41 @@ import {
   Param,
   Patch,
   Post,
-  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/CreateCommentDto';
 import { UpdateCommentDto } from './dto/UpdateCommentDto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.gurad';
+import { GetUser } from 'src/auth/get-user.decorator';
 
 @Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
-    const authorId = req.user.userId;
-    return this.commentService.create(createCommentDto, authorId);
+  create(
+    @Body() createCommentDto: CreateCommentDto,
+    @GetUser('userId') userId: string,
+  ) {
+    return this.commentService.create(createCommentDto, userId);
   }
   @Get('post/:postId')
   findByPost(@Param('postId') postId: string) {
     return this.commentService.findByPost(postId);
   }
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateCommentDto: UpdateCommentDto,
-    @Request() req,
+    @GetUser('userId') userId: string,
   ) {
-    const authorId = req.user.userId;
-    return this.commentService.update(id, authorId, updateCommentDto);
+    return this.commentService.update(id, userId, updateCommentDto);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  delete(@Param('id') id: string, @Request() req) {
-    const authorId = req.user.userId;
-    return this.commentService.delete(id, authorId);
+  delete(@Param('id') id: string, @GetUser('userId') userId: string) {
+    return this.commentService.delete(id, userId);
   }
 }

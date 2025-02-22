@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
   Query,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -15,6 +15,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.gurad';
 import { GetUser } from 'src/auth/get-user.decorator';
+import { Request } from 'express';
 
 @Controller('posts')
 export class PostController {
@@ -48,11 +49,11 @@ export class PostController {
     @GetUser('userId') userId: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.update(id, userId, updatePostDto);
+    return this.postService.update(id, userId, updatePostDto);
   }
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser('userId') userId: string) {
-    return this.remove(id, userId);
+    return this.postService.remove(id, userId);
   }
 }

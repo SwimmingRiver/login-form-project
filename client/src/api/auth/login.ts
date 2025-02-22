@@ -9,7 +9,7 @@ const login = async (data: UserInterface) => {
     });
     const accessToken = res.data.accessToken;
     apiClient.defaults.headers.Authorization = `Bearer ${accessToken}`;
-    console.log(res.data);
+
     if (res.status === 200 || 201) {
       console.log("Complete login");
       return res.data;

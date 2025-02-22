@@ -1,8 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './models/comment.schema';
 import { CreateCommentDto } from './dto/CreateCommentDto';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateCommentDto } from './dto/UpdateCommentDto';
 
 export class CommentService {
@@ -19,7 +23,7 @@ export class CommentService {
   }
   async findByPost(postId: string): Promise<Comment[]> {
     return this.commentModel
-      .find({ post: postId, isDeleted: false })
+      .find({ post: postId })
       .populate('author', 'username')
       .populate('parentComment')
       .exec();
@@ -30,6 +34,7 @@ export class CommentService {
     updateCommentDto: UpdateCommentDto,
   ): Promise<Comment> {
     const comment = await this.commentModel.findById(commentId);
+
     if (!comment) throw new NotFoundException('Comment not found');
     if (comment.author.toString() !== authorId)
       throw new ForbiddenException('You can only edit your own comments');
@@ -44,6 +49,6 @@ export class CommentService {
     if (comment.author.toString() !== authorId)
       throw new ForbiddenException('You can only delete your own comments');
 
-    await comment.save();
+    // await comment.save(); //??
   }
 }

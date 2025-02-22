@@ -2,7 +2,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Post } from './models/post.schema';
 import { Model } from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 export class PostService {
@@ -44,16 +44,29 @@ export class PostService {
     return post;
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
+  async update(
+    id: string,
+    userId: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<Post> {
     const updatedPost = await this.postModel.findByIdAndUpdate(
       id,
       updatePostDto,
       { new: true },
     );
+    const post = await this.postModel.findById(id);
+
+    if (post.author.toString() !== userId) {
+      throw new ForbiddenException('You are not allowed to edit this post');
+    }
     if (!updatedPost) throw new NotFoundException('Post not found');
     return updatedPost;
   }
-  async remove(id: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<void> {
+    const post = await this.postModel.findById(id);
+    if (post.author.toString() !== userId) {
+      throw new ForbiddenException('You are not allowed to delete this post');
+    }
     const result = await this.postModel.findByIdAndDelete(id);
     if (!result) throw new NotFoundException('Post not found');
   }

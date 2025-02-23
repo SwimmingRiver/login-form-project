@@ -3,13 +3,23 @@ import { Box } from "@chakra-ui/react";
 import useMe from "../../hooks/auth/useMe";
 import useLogout from "../../hooks/auth/useLogout";
 import { Link } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 const NavBar = () => {
   const { data } = useMe();
-
-  const { mutate } = useLogout();
+  const queryClient = useQueryClient();
+  const { mutate, isSuccess } = useLogout();
+  const navigate = useNavigate();
   const onClick = () => {
     mutate();
   };
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/");
+      queryClient.setQueryData(["myInfo"], null); //TODO: 쿼리값을 강제로 초기화해도 되는지에 대해서 공부 필요
+    }
+  }, [isSuccess, navigate, queryClient]);
   return (
     <Box
       bg="#0d9488"

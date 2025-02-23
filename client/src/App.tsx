@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { SignUp } from "./pages/Signup";
 import Redirect from "./pages/Login/Redirect";
 import NavBar from "./layouts/Navbar";
+import Post from "./pages/Posts/Post";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/redirect" element={<Redirect />} />
+        <Route path="/posts/:id" element={<Post />} />
       </Routes>
     </div>
   );

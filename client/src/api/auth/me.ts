@@ -19,7 +19,7 @@ const me = async (data: any) => {
         return apiClient(err.config);
       } catch (error) {
         console.error("Token refresh failed", err);
-        localStorage.removeItem("acessToken");
+
         return Promise.reject(error);
       }
     }

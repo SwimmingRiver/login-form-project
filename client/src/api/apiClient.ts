@@ -6,7 +6,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const excludedPaths = ["/user/signup", "/auth/login"];
+  const excludedPaths = ["/user/signup"];
   const isExcluded = excludedPaths.some((path) => config.url?.includes(path));
 
   if (isExcluded) {

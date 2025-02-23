@@ -24,14 +24,17 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const tokens = await this.authService.login(loginDto);
+
     res
       .cookie('refresh_token', tokens.refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .send({ accessToken: tokens.accessToken, user: tokens.user });
   }
+
   @Post('refresh')
   async refresh(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies['refresh_token'];
@@ -55,7 +58,7 @@ export class AuthController {
   //TODO: 엔드포인트 명명 고민하기
   @Get('me')
   async fetchMyUserData(@Req() req: Request, @Res() res: Response) {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.cookie?.split('=')[1];
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -98,7 +101,7 @@ export class AuthController {
           },
         },
       );
-      const { access_token, refresh_token } = tokenResponse.data;
+      const { access_token } = tokenResponse.data;
 
       const userInfoResponse = await axios.get(
         'https://openapi.naver.com/v1/nid/me',
@@ -117,23 +120,18 @@ export class AuthController {
       });
 
       const accessToken = this.jwtService.sign({
-        useremail: user.useremail,
         username: user.username,
         sub: user._id,
       });
-      const refreshToken = this.jwtService.sign(
-        { useremail: user.useremail, sub: user._id },
-        { expiresIn: '7d' },
-      );
+
       res
-        .cookie('refresh_token', refreshToken, {
+        .cookie('refresh_token', accessToken, {
           httpOnly: true,
           sameSite: 'strict',
         })
         .json({
           success: true,
           accessToken,
-          user,
         });
       return res;
     } catch (error) {

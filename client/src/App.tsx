@@ -7,18 +7,22 @@ import { SignUp } from "./pages/Signup";
 import Redirect from "./pages/Login/Redirect";
 import NavBar from "./layouts/Navbar";
 import Post from "./pages/Posts/Post";
+import Write from "./pages/Write/Write";
 
 function App() {
   return (
     <div className="App">
       <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/redirect" element={<Redirect />} />
-        <Route path="/posts/:id" element={<Post />} />
-      </Routes>
+      <div className="mainBody">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/redirect" element={<Redirect />} />
+          <Route path="/posts/:id" element={<Post />} />
+          <Route path="/write" element={<Write />} />
+        </Routes>
+      </div>
     </div>
   );
 }

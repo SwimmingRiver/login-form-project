@@ -1,0 +1,23 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  height: 32px;
+  border-radius: 8px;
+  padding: 4px;
+}
+.contents {
+  border-radius: 8px;
+  height: 128px;
+  padding: 4px;
+}
+.writeButton {
+  cursor: pointer;
+  color: white;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #e65100;
+}

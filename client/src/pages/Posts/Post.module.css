@@ -1,0 +1,8 @@
+.postWrapper {
+  border: solid 1px black;
+}
+.headerWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

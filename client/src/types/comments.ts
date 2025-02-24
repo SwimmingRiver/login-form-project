@@ -5,5 +5,6 @@ export interface CommentInterface {
   _id?: string;
   author?: {
     username: string;
+    _id: string;
   };
 }
